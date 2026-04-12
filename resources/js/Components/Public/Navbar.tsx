@@ -1,0 +1,139 @@
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import { Button } from '@/Components/ui/button';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/Components/ui/sheet';
+import { Link, usePage } from '@inertiajs/react';
+import { MenuIcon } from 'lucide-react';
+import { useState } from 'react';
+
+import type { PageProps } from '@/types';
+
+const navItems = [
+    { href: '#home', label: 'Home' },
+    { href: '#products', label: 'Products' },
+    { href: '#about', label: 'About' },
+    { href: '#contact', label: 'Contact' },
+] as const;
+
+export default function Navbar() {
+    const [open, setOpen] = useState(false);
+    const { auth } = usePage<PageProps>().props;
+
+    return (
+        <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/70">
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+                <Link
+                    href="/#home"
+                    className="flex shrink-0 items-center gap-2 text-foreground transition-opacity hover:opacity-90"
+                >
+                    <ApplicationLogo className="size-8 text-primary" />
+                    <span className="font-heading text-lg font-semibold tracking-tight">
+                        LA Meat
+                    </span>
+                </Link>
+
+                <nav
+                    className="hidden items-center gap-1 md:flex"
+                    aria-label="Main"
+                >
+                    {navItems.map((item) => (
+                        <a
+                            key={item.href}
+                            href={item.href}
+                            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                            {item.label}
+                        </a>
+                    ))}
+                </nav>
+
+                <div className="flex items-center gap-2">
+                    <div className="hidden items-center gap-2 sm:flex">
+                        {auth.user ? (
+                            <Button size="sm" asChild>
+                                <Link href={route('dashboard')}>
+                                    Dashboard
+                                </Link>
+                            </Button>
+                        ) : (
+                            <>
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link href={route('login')}>Login</Link>
+                                </Button>
+                                <Button size="sm" asChild>
+                                    <Link href={route('register')}>
+                                        Register
+                                    </Link>
+                                </Button>
+                            </>
+                        )}
+                    </div>
+
+                    <Sheet open={open} onOpenChange={setOpen}>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="md:hidden"
+                                aria-label="Open menu"
+                            >
+                                <MenuIcon className="size-4" />
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-[min(100%,20rem)]">
+                            <SheetHeader>
+                                <SheetTitle className="text-left">Menu</SheetTitle>
+                            </SheetHeader>
+                            <nav
+                                className="mt-6 flex flex-col gap-1"
+                                aria-label="Mobile"
+                            >
+                                {navItems.map((item) => (
+                                    <a
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={() => setOpen(false)}
+                                        className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                                    >
+                                        {item.label}
+                                    </a>
+                                ))}
+                            </nav>
+                            <div className="mt-6 flex flex-col gap-2 border-t border-border pt-6">
+                                {auth.user ? (
+                                    <Button className="w-full" asChild>
+                                        <Link href={route('dashboard')}>
+                                            Dashboard
+                                        </Link>
+                                    </Button>
+                                ) : (
+                                    <>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            asChild
+                                        >
+                                            <Link href={route('login')}>
+                                                Login
+                                            </Link>
+                                        </Button>
+                                        <Button className="w-full" asChild>
+                                            <Link href={route('register')}>
+                                                Register
+                                            </Link>
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+            </div>
+        </header>
+    );
+}
