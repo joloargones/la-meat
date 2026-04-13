@@ -1,4 +1,5 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import AuthModal, { type AuthView } from '@/Components/Auth/AuthModal';
 import { Button } from '@/Components/ui/button';
 import {
     Sheet,
@@ -6,18 +7,18 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from "@/Components/ui/sheet";
-import { Link, usePage } from "@inertiajs/react";
-import { MenuIcon } from "lucide-react";
-import { useState } from "react";
+} from '@/Components/ui/sheet';
+import { Link, usePage } from '@inertiajs/react';
+import { MenuIcon } from 'lucide-react';
+import { useState } from 'react';
 
-import type { PageProps } from "@/types";
+import type { PageProps } from '@/types';
 
 const navItems = [
-    { href: "#home", label: "Home" },
-    { href: "#products", label: "Products" },
-    { href: "#about", label: "About" },
-    { href: "#contact", label: "Contact" },
+    { href: '#home', label: 'Home' },
+    { href: '#products', label: 'Products' },
+    { href: '#about', label: 'About' },
+    { href: '#contact', label: 'Contact' },
 ] as const;
 
 export default function Navbar() {
@@ -65,17 +66,26 @@ export default function Navbar() {
                     <div className="hidden items-center gap-2 sm:flex">
                         {auth.user ? (
                             <Button size="sm" asChild>
-                                <Link href={route("dashboard")}>Dashboard</Link>
+                                <Link href={route('dashboard')}>
+                                    Dashboard
+                                </Link>
                             </Button>
                         ) : (
                             <>
-                                <Button variant="ghost" size="sm" asChild>
-                                    <Link href={route('login')}>Login</Link>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => openAuth('login')}
+                                >
+                                    Login
                                 </Button>
-                                <Button size="sm" asChild>
-                                    <Link href={route('register')}>
-                                        Register
-                                    </Link>
+                                <Button
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => openAuth('register')}
+                                >
+                                    Register
                                 </Button>
                             </>
                         )}
@@ -119,7 +129,7 @@ export default function Navbar() {
                             <div className="mt-6 flex flex-col gap-2 border-t border-border pt-6">
                                 {auth.user ? (
                                     <Button className="w-full" asChild>
-                                        <Link href={route("dashboard")}>
+                                        <Link href={route('dashboard')}>
                                             Dashboard
                                         </Link>
                                     </Button>
@@ -128,16 +138,23 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             className="w-full"
-                                            asChild
+                                            type="button"
+                                            onClick={() => {
+                                                openAuth('login');
+                                                setOpen(false);
+                                            }}
                                         >
-                                            <Link href={route('login')}>
-                                                Login
-                                            </Link>
+                                            Login
                                         </Button>
-                                        <Button className="w-full" asChild>
-                                            <Link href={route('register')}>
-                                                Register
-                                            </Link>
+                                        <Button
+                                            className="w-full"
+                                            type="button"
+                                            onClick={() => {
+                                                openAuth('register');
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Register
                                         </Button>
                                     </>
                                 )}
