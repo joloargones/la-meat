@@ -1,6 +1,10 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import AuthModal, { type AuthView } from '@/Components/Auth/AuthModal';
+import type { AuthView } from '@/Components/Auth/AuthModal';
+import CartSheet from '@/Components/Public/CartSheet';
+import CustomerAccountMenu from '@/Components/Public/CustomerAccountMenu';
 import { Button } from '@/Components/ui/button';
+import { useShop } from '@/contexts/ShopContext';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     Sheet,
     SheetContent,
@@ -8,8 +12,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/Components/ui/sheet';
-import { Link, usePage } from '@inertiajs/react';
-import { MenuIcon } from 'lucide-react';
+import { MenuIcon, PackageIcon, SettingsIcon, ShoppingBagIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import type { PageProps } from '@/types';
@@ -23,15 +26,16 @@ const navItems = [
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
-    const [authModalOpen, setAuthModalOpen] = useState(false);
-    const [authModalKey, setAuthModalKey] = useState(0);
-    const [authView, setAuthView] = useState<AuthView>('login');
     const { auth } = usePage<PageProps>().props;
+    const { openAuthModal } = useShop();
 
     const openAuth = (view: AuthView) => {
-        setAuthView(view);
-        setAuthModalKey((k) => k + 1);
-        setAuthModalOpen(true);
+        openAuthModal(view);
+    };
+
+    const logout = () => {
+        router.post(route('logout'));
+        setOpen(false);
     };
 
     return (
@@ -63,13 +67,25 @@ export default function Navbar() {
                 </nav>
 
                 <div className="flex items-center gap-2">
+                    {auth.user ? (
+                        <div className="hidden sm:block">
+                            <CartSheet />
+                        </div>
+                    ) : (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="hidden shrink-0 sm:inline-flex"
+                            aria-label="Sign in to use your cart"
+                            onClick={() => openAuth('login')}
+                        >
+                            <ShoppingBagIcon className="size-4" />
+                        </Button>
+                    )}
                     <div className="hidden items-center gap-2 sm:flex">
                         {auth.user ? (
-                            <Button size="sm" asChild>
-                                <Link href={route('dashboard')}>
-                                    Dashboard
-                                </Link>
-                            </Button>
+                            <CustomerAccountMenu />
                         ) : (
                             <>
                                 <Button
@@ -128,13 +144,62 @@ export default function Navbar() {
                             </nav>
                             <div className="mt-6 flex flex-col gap-2 border-t border-border pt-6">
                                 {auth.user ? (
-                                    <Button className="w-full" asChild>
-                                        <Link href={route('dashboard')}>
-                                            Dashboard
-                                        </Link>
-                                    </Button>
+                                    <>
+                                        <div className="flex justify-center pb-2">
+                                            <CartSheet />
+                                        </div>
+                                        <p className="truncate px-1 text-sm font-medium text-foreground">
+                                            {auth.user.name}
+                                        </p>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start gap-2"
+                                            asChild
+                                        >
+                                            <Link
+                                                href={route('orders')}
+                                                onClick={() => setOpen(false)}
+                                            >
+                                                <PackageIcon className="size-4" />
+                                                My orders
+                                            </Link>
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start gap-2"
+                                            asChild
+                                        >
+                                            <Link
+                                                href={route('profile.edit')}
+                                                onClick={() => setOpen(false)}
+                                            >
+                                                <SettingsIcon className="size-4" />
+                                                Settings
+                                            </Link>
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            type="button"
+                                            onClick={logout}
+                                        >
+                                            Log out
+                                        </Button>
+                                    </>
                                 ) : (
                                     <>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full gap-2"
+                                            type="button"
+                                            onClick={() => {
+                                                openAuth('login');
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            <ShoppingBagIcon className="size-4" />
+                                            Sign in for cart
+                                        </Button>
                                         <Button
                                             variant="outline"
                                             className="w-full"
@@ -163,14 +228,6 @@ export default function Navbar() {
                     </Sheet>
                 </div>
             </div>
-
-            <AuthModal
-                key={authModalKey}
-                open={authModalOpen}
-                onOpenChange={setAuthModalOpen}
-                view={authView}
-                onViewChange={setAuthView}
-            />
         </header>
     );
 }

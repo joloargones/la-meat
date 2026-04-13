@@ -11,9 +11,13 @@ import { FormEventHandler, useId } from 'react';
 
 type RegisterFormProps = {
     onSwitchToLogin: () => void;
+    onAuthSuccess?: () => void;
 };
 
-export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
+export default function RegisterForm({
+    onSwitchToLogin,
+    onAuthSuccess,
+}: RegisterFormProps) {
     const id = useId();
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -26,7 +30,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
-            preserveScroll: true,
+            preserveScroll: false,
+            onSuccess: () => {
+                onAuthSuccess?.();
+            },
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };

@@ -15,9 +15,13 @@ import type { PageProps } from '@/types';
 
 type LoginFormProps = {
     onSwitchToRegister: () => void;
+    onAuthSuccess?: () => void;
 };
 
-export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
+export default function LoginForm({
+    onSwitchToRegister,
+    onAuthSuccess,
+}: LoginFormProps) {
     const id = useId();
     const { canResetPassword } = usePage<PageProps>().props;
 
@@ -30,7 +34,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('login'), {
-            preserveScroll: true,
+            preserveScroll: false,
+            onSuccess: () => {
+                onAuthSuccess?.();
+            },
             onFinish: () => reset('password'),
         });
     };

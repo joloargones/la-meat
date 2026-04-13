@@ -20,6 +20,8 @@ type AuthModalProps = {
     onOpenChange: (open: boolean) => void;
     view: AuthView;
     onViewChange: (view: AuthView) => void;
+    /** Called after successful login/register before Inertia navigates */
+    onAuthSuccess?: () => void;
 };
 
 export default function AuthModal({
@@ -27,6 +29,7 @@ export default function AuthModal({
     onOpenChange,
     view,
     onViewChange,
+    onAuthSuccess,
 }: AuthModalProps) {
     const { flash } = usePage<PageProps>().props;
     const status = flash?.status;
@@ -65,12 +68,14 @@ export default function AuthModal({
 
                     {view === 'login' ? (
                         <LoginForm
+                            onAuthSuccess={onAuthSuccess}
                             onSwitchToRegister={() =>
                                 onViewChange('register')
                             }
                         />
                     ) : (
                         <RegisterForm
+                            onAuthSuccess={onAuthSuccess}
                             onSwitchToLogin={() => onViewChange('login')}
                         />
                     )}
