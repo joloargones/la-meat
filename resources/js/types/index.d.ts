@@ -1,8 +1,13 @@
+export type AdminRole = 'super_admin' | 'admin' | 'staff';
+
 export interface User {
     id: number;
     name: string;
     email: string;
     email_verified_at?: string;
+    is_admin?: boolean;
+    username?: string | null;
+    admin_role?: AdminRole | null;
 }
 
 export type PageProps<
@@ -10,9 +15,11 @@ export type PageProps<
 > = T & {
     auth: {
         user: User | null;
+        admin: User | null;
     };
     canResetPassword?: boolean;
     flash?: {
         status?: string | null;
     };
+    errors?: Record<string, string>;
 };
