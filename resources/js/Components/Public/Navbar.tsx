@@ -1,4 +1,5 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import AuthModal, { type AuthView } from '@/Components/Auth/AuthModal';
 import { Button } from '@/Components/ui/button';
 import {
     Sheet,
@@ -22,7 +23,16 @@ const navItems = [
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
+    const [authModalOpen, setAuthModalOpen] = useState(false);
+    const [authModalKey, setAuthModalKey] = useState(0);
+    const [authView, setAuthView] = useState<AuthView>('login');
     const { auth } = usePage<PageProps>().props;
+
+    const openAuth = (view: AuthView) => {
+        setAuthView(view);
+        setAuthModalKey((k) => k + 1);
+        setAuthModalOpen(true);
+    };
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/70">
@@ -62,13 +72,20 @@ export default function Navbar() {
                             </Button>
                         ) : (
                             <>
-                                <Button variant="ghost" size="sm" asChild>
-                                    <Link href={route('login')}>Login</Link>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => openAuth('login')}
+                                >
+                                    Login
                                 </Button>
-                                <Button size="sm" asChild>
-                                    <Link href={route('register')}>
-                                        Register
-                                    </Link>
+                                <Button
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => openAuth('register')}
+                                >
+                                    Register
                                 </Button>
                             </>
                         )}
@@ -116,16 +133,23 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             className="w-full"
-                                            asChild
+                                            type="button"
+                                            onClick={() => {
+                                                openAuth('login');
+                                                setOpen(false);
+                                            }}
                                         >
-                                            <Link href={route('login')}>
-                                                Login
-                                            </Link>
+                                            Login
                                         </Button>
-                                        <Button className="w-full" asChild>
-                                            <Link href={route('register')}>
-                                                Register
-                                            </Link>
+                                        <Button
+                                            className="w-full"
+                                            type="button"
+                                            onClick={() => {
+                                                openAuth('register');
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Register
                                         </Button>
                                     </>
                                 )}
@@ -134,6 +158,14 @@ export default function Navbar() {
                     </Sheet>
                 </div>
             </div>
+
+            <AuthModal
+                key={authModalKey}
+                open={authModalOpen}
+                onOpenChange={setAuthModalOpen}
+                view={authView}
+                onViewChange={setAuthView}
+            />
         </header>
     );
 }

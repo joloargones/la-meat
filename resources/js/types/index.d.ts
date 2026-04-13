@@ -11,4 +11,8 @@ export type PageProps<
     auth: {
         user: User | null;
     };
+    canResetPassword?: boolean;
+    flash?: {
+        status?: string | null;
+    };
 };
