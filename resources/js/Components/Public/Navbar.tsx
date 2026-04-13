@@ -1,5 +1,4 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import AuthModal, { type AuthView } from '@/Components/Auth/AuthModal';
 import { Button } from '@/Components/ui/button';
 import {
     Sheet,
@@ -7,18 +6,18 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from '@/Components/ui/sheet';
-import { Link, usePage } from '@inertiajs/react';
-import { MenuIcon } from 'lucide-react';
-import { useState } from 'react';
+} from "@/Components/ui/sheet";
+import { Link, usePage } from "@inertiajs/react";
+import { MenuIcon } from "lucide-react";
+import { useState } from "react";
 
-import type { PageProps } from '@/types';
+import type { PageProps } from "@/types";
 
 const navItems = [
-    { href: '#home', label: 'Home' },
-    { href: '#products', label: 'Products' },
-    { href: '#about', label: 'About' },
-    { href: '#contact', label: 'Contact' },
+    { href: "#home", label: "Home" },
+    { href: "#products", label: "Products" },
+    { href: "#about", label: "About" },
+    { href: "#contact", label: "Contact" },
 ] as const;
 
 export default function Navbar() {
@@ -41,7 +40,7 @@ export default function Navbar() {
                     href="/#home"
                     className="flex shrink-0 items-center gap-2 text-foreground transition-opacity hover:opacity-90"
                 >
-                    <ApplicationLogo className="size-8 text-primary" />
+                    <ApplicationLogo className="size-16 text-primary" />
                     <span className="font-heading text-lg font-semibold tracking-tight">
                         LA Meat
                     </span>
@@ -66,26 +65,17 @@ export default function Navbar() {
                     <div className="hidden items-center gap-2 sm:flex">
                         {auth.user ? (
                             <Button size="sm" asChild>
-                                <Link href={route('dashboard')}>
-                                    Dashboard
-                                </Link>
+                                <Link href={route("dashboard")}>Dashboard</Link>
                             </Button>
                         ) : (
                             <>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    type="button"
-                                    onClick={() => openAuth('login')}
-                                >
-                                    Login
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link href={route('login')}>Login</Link>
                                 </Button>
-                                <Button
-                                    size="sm"
-                                    type="button"
-                                    onClick={() => openAuth('register')}
-                                >
-                                    Register
+                                <Button size="sm" asChild>
+                                    <Link href={route('register')}>
+                                        Register
+                                    </Link>
                                 </Button>
                             </>
                         )}
@@ -102,9 +92,14 @@ export default function Navbar() {
                                 <MenuIcon className="size-4" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[min(100%,20rem)]">
+                        <SheetContent
+                            side="right"
+                            className="w-[min(100%,20rem)]"
+                        >
                             <SheetHeader>
-                                <SheetTitle className="text-left">Menu</SheetTitle>
+                                <SheetTitle className="text-left">
+                                    Menu
+                                </SheetTitle>
                             </SheetHeader>
                             <nav
                                 className="mt-6 flex flex-col gap-1"
@@ -124,7 +119,7 @@ export default function Navbar() {
                             <div className="mt-6 flex flex-col gap-2 border-t border-border pt-6">
                                 {auth.user ? (
                                     <Button className="w-full" asChild>
-                                        <Link href={route('dashboard')}>
+                                        <Link href={route("dashboard")}>
                                             Dashboard
                                         </Link>
                                     </Button>
@@ -133,23 +128,16 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             className="w-full"
-                                            type="button"
-                                            onClick={() => {
-                                                openAuth('login');
-                                                setOpen(false);
-                                            }}
+                                            asChild
                                         >
-                                            Login
+                                            <Link href={route('login')}>
+                                                Login
+                                            </Link>
                                         </Button>
-                                        <Button
-                                            className="w-full"
-                                            type="button"
-                                            onClick={() => {
-                                                openAuth('register');
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            Register
+                                        <Button className="w-full" asChild>
+                                            <Link href={route('register')}>
+                                                Register
+                                            </Link>
                                         </Button>
                                     </>
                                 )}
