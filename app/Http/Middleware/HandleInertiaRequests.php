@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'admin' => $request->user('admin'),
             ],
             'canResetPassword' => Route::has('password.request'),
             'flash' => [
